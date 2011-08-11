@@ -1,0 +1,137 @@
+diff -up lynx2-8-6/lynx.cfg.redhat lynx2-8-6/lynx.cfg
+--- lynx2-8-6/lynx.cfg.redhat	2006-09-18 20:28:28.000000000 -0400
++++ lynx2-8-6/lynx.cfg	2008-08-07 13:58:33.000000000 -0400
+@@ -1,7 +1,10 @@
+ # lynx.cfg file.
+-# The default placement for this file is /usr/local/lib/lynx.cfg (Unix)
++# The default placement for this file is /etc/lynx.cfg (Red Hat Linux, Fedora)
+ #                                     or Lynx_Dir:lynx.cfg (VMS)
+ #
++# Please don't edit this file directly (it is updated with every Red Hat
++# Linux update, overwriting your changes). Instead, edit /etc/lynx-site.cfg.
++#
+ # $Format: "#PRCS LYNX_VERSION \"$ProjectVersion$\""$
+ #PRCS LYNX_VERSION "2.8.6rel.5"
+ #
+@@ -92,7 +95,7 @@
+ #
+ # Normally we expect you will connect to a remote site, e.g., the Lynx starting
+ # site:
+-STARTFILE:http://lynx.isc.org/
++STARTFILE:file:/usr/share/doc/HTML/index.html
+ #
+ # As an alternative, you may want to use a local URL.  A good choice for this is
+ # the user's home directory:
+@@ -396,7 +399,7 @@ DEFAULT_INDEX_FILE:http://lynx.isc.org/
+ # Lynx (case insensitive).
+ # Find RFC 1345 at http://www.ics.uci.edu/pub/ietf/uri/rfc1345.txt .
+ #
+-#CHARACTER_SET:iso-8859-1
++CHARACTER_SET:utf-8
+ 
+ .h2 LOCALE_CHARSET
+ # LOCALE_CHARSET overrides CHARACTER_SET if true, using the current locale to
+@@ -1776,6 +1779,9 @@ DEFAULT_INDEX_FILE:http://lynx.isc.org/
+ .ex
+ #DOWNLOADER:Save OS/390 binary file: iconv -f IBM-1047 -t ISO8859-1 %s >%s:FALSE
+ 
++# Added by Red Hat:
++DOWNLOADER:View with less:less %s:TRUE
++
+ 
+ .h1 Interaction
+ 
+@@ -3366,6 +3372,7 @@ COLOR:6:brightred:black
+ #ENABLE_LYNXRC:vi_keys:ON
+ #ENABLE_LYNXRC:visited_links:ON
+ .fi
++INCLUDE:/etc/lynx-site.cfg
+ 
+ .h1 External Programs
+ # Any of the compiled-in pathnames of external programs can be overridden
+diff -up lynx2-8-6/userdefs.h.redhat lynx2-8-6/userdefs.h
+--- lynx2-8-6/userdefs.h.redhat	2004-12-30 07:11:59.000000000 -0500
++++ lynx2-8-6/userdefs.h	2008-08-07 13:56:42.000000000 -0400
+@@ -100,7 +100,7 @@
+  * mailcap files (see the examples in the samples directory).
+  */
+ #ifndef LYNX_CFG_FILE
+-#define LYNX_CFG_FILE "Lynx_Dir:lynx.cfg"
++#define LYNX_CFG_FILE "/etc/lynx.cfg"
+ #endif /* LYNX_CFG_FILE */
+ 
+ /**************************
+@@ -110,8 +110,8 @@
+  * Mappings in these global and personal files override any SUFFIX
+  * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
+  */
+-#define GLOBAL_EXTENSION_MAP "Lynx_Dir:mime.types"
+-#define PERSONAL_EXTENSION_MAP "mime.types"
++#define GLOBAL_EXTENSION_MAP "/etc/mime.types"
++#define PERSONAL_EXTENSION_MAP ".mime.types"
+ 
+ /**************************
+  * The MAILCAP file allows you to map file MIME types to
+@@ -120,7 +120,7 @@
+  * Mappings in these global and personal files override any VIEWER
+  * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
+  */
+-#define GLOBAL_MAILCAP "Lynx_Dir:mailcap"
++#define GLOBAL_MAILCAP "/etc/mailcap"
+ #define PERSONAL_MAILCAP ".mailcap"
+ 
+ /**************************
+@@ -284,7 +284,7 @@
+ #ifdef DOSPATH
+ #define LYNX_CFG_FILE "./lynx.cfg"
+ #else
+-#define LYNX_CFG_FILE "/usr/local/lib/lynx.cfg"
++#define LYNX_CFG_FILE "/etc/lynx.cfg"
+ #endif /* DOSPATH */
+ #endif /* LYNX_CFG_FILE */
+ #endif /* HAVE_CONFIG_H */
+@@ -296,7 +296,7 @@
+  * Mappings in these global and personal files override any SUFFIX
+  * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
+  */
+-#define GLOBAL_EXTENSION_MAP "/usr/local/lib/mosaic/mime.types"
++#define GLOBAL_EXTENSION_MAP "/etc/mime.types"
+ #define PERSONAL_EXTENSION_MAP ".mime.types"
+ 
+ /**************************
+@@ -306,7 +306,7 @@
+  * Mappings in these global and personal files override any VIEWER
+  * definitions in lynx.cfg and built-in defaults from src/HTInit.c.
+  */
+-#define GLOBAL_MAILCAP "/usr/local/lib/mosaic/mailcap"
++#define GLOBAL_MAILCAP "/etc/mailcap"
+ #define PERSONAL_MAILCAP ".mailcap"
+ 
+ /**************************
+@@ -324,7 +324,7 @@
+  * use any default viewers for image types.  Note that open is used as
+  * the default for NeXT, instead of the XLOADIMAGE_COMMAND definition.
+  */
+-#define XLOADIMAGE_COMMAND "xli %s &"
++#define XLOADIMAGE_COMMAND "display %s &"
+ 
+ /**************************
+  * For UNIX systems, SYSTEM_MAIL and SYSTEM_MAIL_FLAGS are set by the
+@@ -345,7 +345,7 @@
+  * the "TMPDIR" (unix), or "TEMP" or "TMP" (Windows,DOS,OS/2)
+  * variable.
+  */
+-#define TEMP_SPACE "/tmp/"
++#define TEMP_SPACE "~"
+ 
+ /********************************
+  * Comment this line out to disable code that implements command logging
+@@ -1134,7 +1134,7 @@
+  * OSU server distribution.
+  */
+ #ifndef HAVE_CONFIG_H
+-/* #define LYNXCGI_LINKS */
++#define LYNXCGI_LINKS 
+ #endif
+ 
+ /*********************************

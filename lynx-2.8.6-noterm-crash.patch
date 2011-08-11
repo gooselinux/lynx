@@ -1,0 +1,43 @@
+From fb0b65b0d3b753d740e16b5433e07917ff0904e7 Mon Sep 17 00:00:00 2001
+From: Kamil Dudka <kdudka@redhat.com>
+Date: Thu, 15 Apr 2010 11:40:37 +0200
+Subject: [PATCH] LYCurses: do not crash when there is no terminal
+
+
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ src/LYCurses.c |   16 ++++++++++------
+ 1 files changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/src/LYCurses.c b/src/LYCurses.c
+index dd0f1d2..e744d97 100644
+--- a/src/LYCurses.c
++++ b/src/LYCurses.c
+@@ -1389,14 +1389,18 @@ void lynx_nl2crlf(int normal GCC_UNUSED)
+     static int can_fix = TRUE;
+ 
+     if (!did_save) {
+-	saved_tty = cur_term->Nttyb;
+-	did_save = TRUE;
+-#if NCURSES_VERSION_PATCH < 20010529
+-	/* workaround for optimizer bug with nonl() */
+-	if ((tigetstr("cud1") != 0 && *tigetstr("cud1") == '\n')
+-	    || (tigetstr("ind") != 0 && *tigetstr("ind") == '\n'))
++	if (cur_term == 0) {
+ 	    can_fix = FALSE;
++	} else {
++          saved_tty = cur_term->Nttyb;
++          did_save = TRUE;
++#if NCURSES_VERSION_PATCH < 20010529
++          /* workaround for optimizer bug with nonl() */
++          if ((tigetstr("cud1") != 0 && *tigetstr("cud1") == '\n')
++              || (tigetstr("ind") != 0 && *tigetstr("ind") == '\n'))
++              can_fix = FALSE;
+ #endif
++        }
+     }
+     if (can_fix) {
+ 	if (normal) {
+-- 
+1.6.6.1
+

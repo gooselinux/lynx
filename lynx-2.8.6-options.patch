@@ -1,0 +1,30 @@
+--- lynx2-8-6/src/LYMain.c.pom	2006-09-19 02:28:28.000000000 +0200
++++ lynx2-8-6/src/LYMain.c	2007-10-02 13:42:07.000000000 +0200
+@@ -4083,6 +4083,7 @@ static BOOL parse_arg(char **argv,
+ 
+ #if EXTENDED_STARTFILE_RECALL
+     static BOOLEAN no_options_further = FALSE;	/* set to TRUE after '--' argument */
++    static int nof_index = 0;			/* set the index of -- argument */
+ #endif
+ 
+     arg_name = argv[0];
+@@ -4102,9 +4103,9 @@ static BOOL parse_arg(char **argv,
+     /*
+      * Check for a command line startfile.  - FM
+      */
+-    if (*arg_name != '-'
++    if (*arg_name != '-'  
+ #if EXTENDED_OPTION_LOGIC
+-	|| no_options_further == TRUE
++	|| (no_options_further == TRUE && nof_index<(*countp))
+ #endif
+ 	) {
+ #if EXTENDED_STARTFILE_RECALL
+@@ -4140,6 +4141,7 @@ static BOOL parse_arg(char **argv,
+ #if EXTENDED_OPTION_LOGIC
+     if (strcmp(arg_name, "--") == 0) {
+ 	no_options_further = TRUE;
++	nof_index = *countp;
+ 	return TRUE;
+     }
+ #endif

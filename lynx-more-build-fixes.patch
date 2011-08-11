@@ -1,0 +1,96 @@
+diff -Nur lynx2-8-6-orig/makefile.in lynx2-8-6/makefile.in
+--- lynx2-8-6-orig/makefile.in	2006-09-03 18:25:39.000000000 -0500
++++ lynx2-8-6/makefile.in	2008-05-16 23:53:02.000000000 -0500
+@@ -159,12 +159,12 @@
+ 
+ all lynx$x: cfg_defs.h LYHelp.h
+ @MSG_DIR_MAKE@	$(SHELL) $(scripts_dir)/fixtext.sh $(srcdir)/LYMessages_en.h >LYMessages.c
+-@MSG_DIR_MAKE@	cd po && $(MAKE) CC="$(CC)"
+-	cd $(WWWINC) && $(MAKE) CC="$(CC)" \
++@MSG_DIR_MAKE@	$(MAKE) -C po CC="$(CC)" 
++	$(MAKE) -C $(WWWINC) CC="$(CC)" \
+ 		LY_CFLAGS="$(CFLAGS)" \
+ 		CPPFLAGS="$(CPPFLAGS)" \
+ 		LYFLAGS="$(SITE_LYDEFS)"
+-	cd src && $(MAKE) all CC="$(CC)" \
++	$(MAKE) -C src all CC="$(CC)" \
+ 		CFLAGS="$(CFLAGS)" \
+ 		CPPFLAGS="$(CPPFLAGS)" \
+ 		LIBS="$(LIBS) $(RESOLVLIB) $(WAISLIB) $(SITE_LIBS)" \
+@@ -173,11 +173,11 @@
+ 		WWWLIB="../$(WWWINC)/libwww.a"
+ 
+ lint:
+-	cd $(WWWINC) && $(MAKE) LINT="$(LINT)" CC="$(CC)" \
++	$(MAKE) -C $(WWWINC) LINT="$(LINT)" CC="$(CC)" \
+ 		LY_CFLAGS="$(CFLAGS)" \
+ 		CPPFLAGS="$(CPPFLAGS)" \
+ 		LYFLAGS="$(SITE_LYDEFS)" lint
+-	cd src && $(MAKE) all LINT="$(LINT)" CC="$(CC)" \
++	$(MAKE) -C src all LINT="$(LINT)" CC="$(CC)" \
+ 		CFLAGS="$(CFLAGS)" \
+ 		CPPFLAGS="$(CPPFLAGS)" \
+ 		LIBS="$(LIBS) $(RESOLVLIB) $(WAISLIB) $(SITE_LIBS)" \
+@@ -200,25 +200,25 @@
+ clean:
+ 	rm -f WWW/Library/*/*.[aoib]
+ 	rm -f WWW/Library/*/.created
+-	cd src && $(MAKE) clean
++	$(MAKE) -C src clean
+ @MSG_DIR_MAKE@	rm -f LYMessages.c
+-@MSG_DIR_MAKE@	cd po && $(MAKE) $@
++@MSG_DIR_MAKE@	$(MAKE) -C po $@
+ 	rm -f *.b src/lynx$x *.leaks cfg_defs.h LYHelp.h lint.*
+ @LYNXCFG_MAKE@	-rm -f alphatoc.html body.html cattoc.html tmp007
+ 	rm -f help_files.sed
+ 	rm -f core *.core
+ 
+ depend: cfg_defs.h LYHelp.h
+-	cd $(WWWINC) && $(MAKE) $@
+-	cd src && $(MAKE) $@
++	$(MAKE) -C $(WWWINC) $@
++	$(MAKE) -C src $@
+ 
+ distclean: clean
+ 	-rm -f WWW/Library/*/*~
+ 	-rm -f WWW/Library/*/*.bak
+ 	-rm -rf src/obsolete
+-	-cd src && $(MAKE) $@
+-	-cd src/chrtrans && $(MAKE) $@
+-@MSG_DIR_MAKE@	cd po && $(MAKE) $@
++	-$(MAKE) -C src $@
++	-$(MAKE) -C src/chrtrans $@
++@MSG_DIR_MAKE@	$(MAKE) -C po $@
+ @MSG_DIR_MAKE@	-rmdir po
+ 	-rm -f *~ *.bak *.sav tags TAGS
+ 	-rm -f $(WWWINC)/makefile src/makefile src/chrtrans/makefile
+@@ -287,7 +287,7 @@
+ 	@echo Full installation complete.
+ 
+ install-bin: $(BINDIR) lynx$x
+-@MSG_DIR_MAKE@	cd po && $(MAKE) CC="$(CC)" install
++@MSG_DIR_MAKE@	$(MAKE) -C po CC="$(CC)" install
+ 	-mv -f $(BINDIR)/lynx$x $(BINDIR)/lynx.old
+ 	$(INSTALL_PROGRAM) lynx$x $(BINDIR)/lynx$x
+ 
+@@ -405,7 +405,7 @@
+ 	$(INSTALL_DATA) $(srcdir)/samples/lynx.lss $(SYSCONFDIR)/lynx.lss
+ 
+ uninstall ::
+-@MSG_DIR_MAKE@	cd po && $(MAKE) CC="$(CC)" uninstall
++@MSG_DIR_MAKE@	$(MAKE) -C po CC="$(CC)" uninstall
+ 	-rm -f $(BINDIR)/lynx$x
+ 	-rm -f $(MANDIR)/lynx.1
+ 	-rm -f $(SYSCONFDIR)/lynx.cfg
+diff -Nur lynx2-8-6-orig/src/makefile.in lynx2-8-6/src/makefile.in
+--- lynx2-8-6-orig/src/makefile.in	2008-05-16 23:26:20.000000000 -0500
++++ lynx2-8-6/src/makefile.in	2008-05-17 00:20:31.000000000 -0500
+@@ -195,7 +195,7 @@
+ 	UCdomap.h $(CMN)UCMap.h $(TABLES) $(top_srcdir)/userdefs.h
+ 
+ chrtrans/makeuctb$(BUILD_EXEEXT):
+-	$(MAKE) -C chrtrans makeuctb$(BUILD_EXEEXT)
++	-$(MAKE) -C chrtrans makeuctb$(BUILD_EXEEXT)
+ 
+ UCAux$o : UCAux.c $(CMN)UCAux.h $(CMN)UCDefs.h
+ LYCookie$o : $(top_srcdir)/userdefs.h
