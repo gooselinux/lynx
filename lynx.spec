@@ -19,7 +19,7 @@ Patch8: lynx-2.8.7-bm-del.patch
 #582544
 Patch9: lynx-2.8.6-noterm-crash.patch
 
-Requires: redhat-indexhtml
+Requires: goose-indexhtml
 Provides: webclient
 Provides: text-www-browser
 BuildRequires: gettext
