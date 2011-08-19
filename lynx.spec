@@ -122,6 +122,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace,missingok) %{_sysconfdir}/lynx-site.cfg
 
 %changelog
+* Fri Aug 19 2011 Mike Adams <shalkie@gooseproject.org> - 2.8.6-27
+- changed the indexhtml to goose-indexhtml
+
 * Fri May 14 2010 Kamil Dudka <kdudka@redhat.com> - 2.8.6-27
 - use more suitable starting site (#591553)
 
